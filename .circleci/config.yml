@@ -8,6 +8,7 @@ executors:
 
 jobs:
     build_app:
+        resource_class: small
         parameters:
             with_deploy:
                 type: boolean
