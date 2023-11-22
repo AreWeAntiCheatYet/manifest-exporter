@@ -93,6 +93,11 @@ async def forward_to_github(req: Request, resp: Response):
     return {"err": "ok"}
 
 
+@APP.get("/")
+async def hello_world():
+    return {"hello": "world"}
+
+
 async def main() -> int:
     srv_cfg = uvicorn.Config(APP, port=8080, log_level="debug")
     srv = uvicorn.Server(srv_cfg)
