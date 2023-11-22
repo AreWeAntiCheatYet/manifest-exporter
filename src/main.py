@@ -99,7 +99,7 @@ async def hello_world():
 
 
 async def main() -> int:
-    srv_cfg = uvicorn.Config(APP, port=8080, log_level="debug")
+    srv_cfg = uvicorn.Config(APP, host="0.0.0.0", port=8080, log_level="debug")
     srv = uvicorn.Server(srv_cfg)
 
     main_background_task = asyncio.create_task(batch_to_github_job())
