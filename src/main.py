@@ -10,6 +10,7 @@ import requests
 import structlog
 import uvicorn
 from fastapi import FastAPI, Request, Response, status
+from fastapi.middleware.cors import CORSMiddleware
 
 APP: Final[FastAPI] = FastAPI()
 LOGGER: Final[structlog.stdlib.BoundLogger] = structlog.getLogger()
@@ -105,6 +106,18 @@ async def main() -> int:
     main_background_task = asyncio.create_task(batch_to_github_job())
     BACKGROUND_JOBS.add(main_background_task)
     main_background_task.add_done_callback(BACKGROUND_JOBS.discard)
+
+    cors_origins = [
+        "https://areweanticheatyet.com",
+        "https://export.areweanticheatyet.com",
+    ]
+    APP.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     await srv.serve()
     await asyncio.wait(*BACKGROUND_JOBS, timeout=60)
