@@ -16,7 +16,7 @@ jobs:
         steps:
             - checkout
             - setup_remote_docker:
-                version: 17.09.0-ce
+                version: 19.03.13
             - restore_cache:
                 keys:
                     - pipenv-v0-{{ checksum "Pipfile.lock" }}
