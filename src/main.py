@@ -32,8 +32,9 @@ def upload_manifest(manifest: List[Any]) -> str:
         headers={"User-Agent": "AWACY Python Manifest Exporter"},
     )
     if resp.ok:
-        LOGGER.info("upload ok!", url=resp.text+".txt")
-        PENDING_SUBMISSIONS.put(resp.text+".txt")
+        paste_url = resp.text.rstrip() + ".txt"
+        LOGGER.info("upload ok!", url=paste_url)
+        PENDING_SUBMISSIONS.put(paste_url)
         return resp.text
     else:
         raise Exception("Manifest upload did not finish properly")
