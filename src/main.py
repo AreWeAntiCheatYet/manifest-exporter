@@ -23,7 +23,7 @@ BACKGROUND_JOBS: Set[asyncio.Task[None]] = set()
 
 def upload_manifest(manifest: List[Any]) -> str:
     resp = requests.post(
-        "https://paste.mozilla.org/api/v2/",
+        "https://dpaste.com/api/v2/",
         data={
             "content": str.encode(json.dumps(manifest)),
             "syntax": "json",
