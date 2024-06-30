@@ -33,7 +33,7 @@ def upload_manifest(manifest: List[Any]) -> str:
     )
     if resp.ok:
         LOGGER.info("upload ok!", url=resp.text+".txt")
-        PENDING_SUBMISSIONS.put(resp.text)
+        PENDING_SUBMISSIONS.put(resp.text+".txt")
         return resp.text
     else:
         raise Exception("Manifest upload did not finish properly")
