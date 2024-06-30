@@ -32,7 +32,7 @@ def upload_manifest(manifest: List[Any]) -> str:
         headers={"User-Agent": "AWACY Python Manifest Exporter"},
     )
     if resp.ok:
-        LOGGER.info("upload ok!", url=resp.text)
+        LOGGER.info("upload ok!", url=resp.text+".txt")
         PENDING_SUBMISSIONS.put(resp.text)
         return resp.text
     else:
