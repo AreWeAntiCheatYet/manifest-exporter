@@ -23,11 +23,13 @@ BACKGROUND_JOBS: Set[asyncio.Task[None]] = set()
 
 def upload_manifest(manifest: List[Any]) -> str:
     resp = requests.post(
-        "https://0x0.st/",
-        files={
-            "file": str.encode(json.dumps(manifest)),
-            "expires": 72
+        "https://paste.mozilla.org/api/v2/",
+        data={
+            "content": str.encode(json.dumps(manifest)),
+            "syntax": "json",
+            "expiry_days": 3
         },
+        headers={"User-Agent": "AWACY Python Manifest Exporter"},
     )
     if resp.ok:
         LOGGER.info("upload ok!", url=resp.text)
