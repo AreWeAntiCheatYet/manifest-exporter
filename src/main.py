@@ -18,6 +18,7 @@ EVLOOP: Final[asyncio.AbstractEventLoop] = asyncio.new_event_loop()
 PENDING_SUBMISSIONS: queue.SimpleQueue[str] = queue.SimpleQueue()
 ERRNO: int = 0
 GITHUB_TOKEN: Final[str] = os.environ.get("GITHUB_TOKEN")
+DPASTE_KEY: Final[str] = os.environ.get("DPASTE_KEY")
 BACKGROUND_JOBS: Set[asyncio.Task[None]] = set()
 
 
@@ -27,9 +28,12 @@ def upload_manifest(manifest: List[Any]) -> str:
         data={
             "content": str.encode(json.dumps(manifest)),
             "syntax": "json",
-            "expiry_days": 3
+            "expiry_days": 3,
         },
-        headers={"User-Agent": "AWACY Python Manifest Exporter"},
+        headers={
+            "User-Agent": "AWACY Python Manifest Exporter",
+            "Authorization": "Bearer " + DPASTE_KEY,
+        },
     )
     if resp.ok:
         paste_url = resp.text.rstrip() + ".txt"
@@ -37,6 +41,9 @@ def upload_manifest(manifest: List[Any]) -> str:
         PENDING_SUBMISSIONS.put(paste_url)
         return resp.text
     else:
+        LOGGER.error(
+            "dpaste upload failed", statuscode=resp.status_code, body=resp.content
+        )
         raise Exception("Manifest upload did not finish properly")
 
 
@@ -49,12 +56,12 @@ def batch_to_github():
         return
     resp = requests.post(
         "https://api.github.com/repos/AreWeAntiCheatYet/master-manifest/dispatches",
-        data=json.dumps({
-            "event_type": "manually_dispatched",
-            "client_payload": {
-                "edit_url": work_item
-            },
-        }),
+        data=json.dumps(
+            {
+                "event_type": "manually_dispatched",
+                "client_payload": {"edit_url": work_item},
+            }
+        ),
         headers={
             "Authorization": f"Bearer {GITHUB_TOKEN}",
             "Accept": "application/vnd.github.v3+json",
@@ -64,9 +71,9 @@ def batch_to_github():
     if resp.ok:
         LOGGER.info("manifest edit batched to github")
     else:
-        LOGGER.error("problem occurred when batching edit",
-                     response=resp.text,
-                     item=work_item)
+        LOGGER.error(
+            "problem occurred when batching edit", response=resp.text, item=work_item
+        )
 
 
 async def batch_to_github_job():
