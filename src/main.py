@@ -34,6 +34,7 @@ def upload_manifest(manifest: List[Any]) -> str:
             "User-Agent": "AWACY Python Manifest Exporter",
             "Authorization": "Bearer " + DPASTE_KEY,
         },
+        stream=True,
     )
     if resp.ok:
         paste_url = resp.text.rstrip() + ".txt"
