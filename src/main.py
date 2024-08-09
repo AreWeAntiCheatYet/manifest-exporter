@@ -40,6 +40,7 @@ def upload_manifest(manifest: List[Any]) -> str:
     )
     if resp.ok:
         paste_url = resp.text.rstrip() + ".txt"
+        paste_url = paste_url.(".txt", "")
         LOGGER.info("upload ok!", url=paste_url)
         PENDING_SUBMISSIONS.put(paste_url)
         return resp.text
