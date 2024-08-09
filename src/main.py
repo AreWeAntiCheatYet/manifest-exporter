@@ -24,10 +24,11 @@ BACKGROUND_JOBS: Set[asyncio.Task[None]] = set()
 
 
 def upload_manifest(manifest: List[Any]) -> str:
+    finfo = ("".join(random.choice(string.ascii_lowercase) for i in range(5)), str.encode(json.dumps(manifest), "json"))
     resp = requests.post(
         "https://litterbox.catbox.moe/resources/internals/api.php",
         data={
-            "fileToUpload": ("".join(random.choice(string.ascii_lowercase) for i in range(5)), str.encode(json.dumps(manifest), "json"),
+            "fileToUpload": finfo,
             "reqtype": "fileupload",
             "time": "72h",
         },
