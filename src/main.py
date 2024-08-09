@@ -18,21 +18,19 @@ EVLOOP: Final[asyncio.AbstractEventLoop] = asyncio.new_event_loop()
 PENDING_SUBMISSIONS: queue.SimpleQueue[str] = queue.SimpleQueue()
 ERRNO: int = 0
 GITHUB_TOKEN: Final[str] = os.environ.get("GITHUB_TOKEN")
-DPASTE_KEY: Final[str] = os.environ.get("DPASTE_KEY")
 BACKGROUND_JOBS: Set[asyncio.Task[None]] = set()
 
 
 def upload_manifest(manifest: List[Any]) -> str:
     resp = requests.post(
-        "https://dpaste.com/api/v2/",
+        "https://litterbox.catbox.moe/resources/internals/api.php",
         data={
-            "content": str.encode(json.dumps(manifest)),
-            "syntax": "json",
-            "expiry_days": 3,
+            "fileToUpload": str.encode(json.dumps(manifest)),
+            "reqtype": "fileupload",
+            "time": "72h",
         },
         headers={
             "User-Agent": "AWACY Python Manifest Exporter",
-            "Authorization": "Bearer " + DPASTE_KEY,
         },
         stream=True,
     )
@@ -43,7 +41,7 @@ def upload_manifest(manifest: List[Any]) -> str:
         return resp.text
     else:
         LOGGER.error(
-            "dpaste upload failed", statuscode=resp.status_code, body=resp.content
+            "litterbox upload failed", statuscode=resp.status_code, body=resp.content
         )
         raise Exception("Manifest upload did not finish properly")
 
