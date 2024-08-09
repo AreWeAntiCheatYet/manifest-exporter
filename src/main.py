@@ -35,7 +35,7 @@ def upload_manifest(manifest: List[Any]) -> str:
         headers={
             "User-Agent": "AWACY Python Manifest Exporter",
         },
-        files=str.encode(json.dumps(manifest)),
+        files={"fileToUpload": str.encode(json.dumps(manifest))},
         stream=True,
     )
     if resp.ok:
