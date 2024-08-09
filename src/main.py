@@ -5,6 +5,8 @@ import os
 import queue
 import sys
 from typing import Any, Final, List, Set
+import random
+import string
 
 import requests
 import structlog
@@ -25,7 +27,7 @@ def upload_manifest(manifest: List[Any]) -> str:
     resp = requests.post(
         "https://litterbox.catbox.moe/resources/internals/api.php",
         data={
-            "fileToUpload": str.encode(json.dumps(manifest)),
+            "fileToUpload": ("".join(random.choice(string.ascii_lowercase) for i in range(5)), str.encode(json.dumps(manifest), "json"),
             "reqtype": "fileupload",
             "time": "72h",
         },
